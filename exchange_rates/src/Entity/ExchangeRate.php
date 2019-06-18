@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity
  * @ORM\Table(name="exchange_rates")
+ * @ORM\Entity(repositoryClass="App\Repository\ExchangeRatesRepository")
  */
 class ExchangeRate
 {
@@ -34,8 +35,7 @@ class ExchangeRate
      */
     private $amount;
     /**
-     * @ORM\Column(type="datetime")
-     * @Assert\DateTime()
+     * @ORM\Column(type="date")
      */
     private $date;
     /**
@@ -104,7 +104,7 @@ class ExchangeRate
      */
     public function getDate()
     {
-        return $this->date;
+        return \DateTime::createFromFormat('Y-m-d', $this->date);
     }
 
     /**
