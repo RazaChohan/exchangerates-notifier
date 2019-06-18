@@ -1,0 +1,28 @@
+version: '2'
+services:
+    db:
+        image: mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: exchange_rates
+            MYSQL_USER: exchange_rates
+            MYSQL_PASSWORD: exchange_rates
+    php:
+        build: ./php-fpm
+        expose:
+            - "9000"
+        volumes:
+            - ./exchange_rates:/var/www/exchange_rates
+            - ./logs/exchange_rates:/var/www/exchange_rates/var/logs
+        links:
+            - db
+    nginx:
+        build: ./nginx
+        ports:
+            - "80:80"
+        links:
+            - php
+        volumes_from:
+            - php
+        volumes:
+            - ./logs/nginx/:/var/log/nginx
