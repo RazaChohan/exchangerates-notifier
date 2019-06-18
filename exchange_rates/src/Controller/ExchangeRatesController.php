@@ -85,13 +85,19 @@ class ExchangeRatesController extends FOSRestController
         $repository = $this->getDoctrine()->getRepository(ExchangeRate::class);
         $exchangeRates = $repository->findAllExchangeRatesByFilters($baseCurrency, $date);
         if(empty($exchangeRates)) {
-            $exchangeRates = $this->thirdPartyApi->getExchangeRates("EUR", date('Y-m-d'));
+            $updatedCurrencies = [];
+            $exchangeRates = $this->thirdPartyApi->getExchangeRates($baseCurrency, $date);
             //insert in DB
             $em = $this->getDoctrine()->getManager();
             foreach ($exchangeRates as $exchangeRate) {
+                $updatedCurrencies[] = $exchangeRate->getTarget();
                 $em->persist($exchangeRate);
             }
             $em->flush();
+
+            //Push to rabbitmq whenever data is fetched from API
+            $this->get('old_sound_rabbit_mq.exchanges_producer')->setContentType('application/json');
+            $this->get('old_sound_rabbit_mq.exchanges_producer')->publish(json_encode($updatedCurrencies));
         };
         return $exchangeRates;
     }

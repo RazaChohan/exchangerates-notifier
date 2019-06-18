@@ -5,10 +5,9 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     rabbitmq_host: 'localhost'
-    rabbitmq_port: '15671'
     rabbitmq_user: 'guest'
     rabbitmq_password: 'guest'
-    rabbitmq_statuslayer_vhost: 'exchange_rates.localhost'
+    rabbitmq_statuslayer_vhost: '/'
 
 services:
     # default configuration for services in *this* file
@@ -39,10 +38,11 @@ old_sound_rabbit_mq:
             user: '%rabbitmq_user%'
             password: '%rabbitmq_password%'
             vhost: '%rabbitmq_statuslayer_vhost%'
-            port: '15671'
     producers:
-        emailing:
+        exchanges:
             connection: default
             exchange_options:
-                name: emails
+                name: currency
                 type: direct
+            queue_options:
+                name: currency
