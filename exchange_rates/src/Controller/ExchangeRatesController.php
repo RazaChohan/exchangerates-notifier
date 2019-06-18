@@ -1,6 +1,8 @@
 <?php
 namespace App\Controller;
+use App\Entity\ExchangeRate;
 use App\Utilities\CurlHelper;
+use App\Utilities\ThirdPartyApi;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -13,16 +15,16 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class ExchangeRatesController extends FOSRestController
 {
     /**
-     * @var CurlHelper
+     * @var ThirdPartyApi
      */
-    private $curlHelper;
+    private $thirdPartyApi;
 
     /***
      * ExchangeRatesController constructor.
      */
     public function __construct()
     {
-        $this->curlHelper = new CurlHelper();
+        $this->thirdPartyApi = new ThirdPartyApi();
     }
 
     /**
@@ -34,6 +36,19 @@ class ExchangeRatesController extends FOSRestController
      */
     public function getExchangeRate(Request $request)
     {
-        return $this->handleView($this->view(['status' => true]));
+        $baseCurrency = $request->get('base', 'USD');
+        $repository = $this->getDoctrine()->getRepository(ExchangeRate::class);
+        $exchangeRates = [];//$repository->where('');
+        if(empty($exchangeRates)) {
+            $exchangeRates = $this->thirdPartyApi->getExchangeRates($baseCurrency);
+            //insert in DB
+            $em = $this->getDoctrine()->getManager();
+            foreach ($exchangeRates as $exchangeRate) {
+                $em->persist($exchangeRate);
+            }
+            $em->flush();
+        }
+
+        return $this->handleView($this->view($exchangeRates));
     }
 }
