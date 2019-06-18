@@ -26,7 +26,7 @@ class ExchangeRatesController extends FOSRestController
     }
 
     /**
-     * Lists all Movies.
+     * Lists Exchange rates.
      * @Rest\Get("/exchange-rates")
      *
      * @param $request
