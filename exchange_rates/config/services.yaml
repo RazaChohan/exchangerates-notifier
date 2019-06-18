@@ -4,6 +4,11 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    rabbitmq_host: 'localhost'
+    rabbitmq_port: '15671'
+    rabbitmq_user: 'guest'
+    rabbitmq_password: 'guest'
+    rabbitmq_statuslayer_vhost: 'exchange_rates.localhost'
 
 services:
     # default configuration for services in *this* file
@@ -27,3 +32,17 @@ services:
     # please note that last definitions always *replace* previous ones
     sensio_framework_extra.view.listener:
         alias: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener
+old_sound_rabbit_mq:
+    connections:
+        default:
+            host: '%rabbitmq_host%'
+            user: '%rabbitmq_user%'
+            password: '%rabbitmq_password%'
+            vhost: '%rabbitmq_statuslayer_vhost%'
+            port: '15671'
+    producers:
+        emailing:
+            connection: default
+            exchange_options:
+                name: emails
+                type: direct

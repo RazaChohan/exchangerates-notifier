@@ -28,3 +28,9 @@ services:
             - php
         volumes:
             - ./logs/nginx/:/var/log/nginx:cached
+    rabbitmq: # The RabbitMQ container.
+        build:
+            context: .
+            dockerfile: Dockerfile-rabbitmq
+        ports:
+            - 15672:15672

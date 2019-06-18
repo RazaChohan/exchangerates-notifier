@@ -28,7 +28,8 @@ RUN apk add --update \
     php7-simplexml \
     make \
     curl \
-    php7-curl
+    php7-curl \
+    php7-bcmath
 
 RUN rm -rf /var/cache/apk/* && rm -rf /tmp/*
 

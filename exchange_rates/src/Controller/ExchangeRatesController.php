@@ -39,17 +39,7 @@ class ExchangeRatesController extends FOSRestController
     {
         $baseCurrency = $request->get('base', 'USD');
         $date = $request->get('date', date('Y-m-d'));
-        $repository = $this->getDoctrine()->getRepository(ExchangeRate::class);
-        $exchangeRates = $repository->findAllExchangeRatesByFilters($baseCurrency, $date);
-        if(empty($exchangeRates)) {
-            $exchangeRates = $this->thirdPartyApi->getExchangeRates($baseCurrency, $date);
-            //insert in DB
-            $em = $this->getDoctrine()->getManager();
-            foreach ($exchangeRates as $exchangeRate) {
-                $em->persist($exchangeRate);
-            }
-            $em->flush();
-        }
+        $exchangeRates = $this->getExchangeRates($baseCurrency, $date);
 
         return $this->handleView($this->view($exchangeRates));
     }
@@ -73,33 +63,27 @@ class ExchangeRatesController extends FOSRestController
     }
 
     /***
+     * Xml Rpc get exchange rates
      *
      * @return array
      */
     public function getExchangeRateXmlRpc()
     {
-        $repository = $this->getDoctrine()->getRepository(ExchangeRate::class);
-        $exchangeRates = $repository->findAllExchangeRatesByFilters("EUR", date('Y-m-d'));
-        if(empty($exchangeRates)) {
-            $exchangeRates = $this->thirdPartyApi->getExchangeRates("EUR", date('Y-m-d'));
-            //insert in DB
-            $em = $this->getDoctrine()->getManager();
-            foreach ($exchangeRates as $exchangeRate) {
-                $em->persist($exchangeRate);
-            }
-            $em->flush();
-        };
-        return $exchangeRates;
+        return $this->getExchangeRates('EUR', date('Y-m-d'));
     }
 
     /***
      * Get exchange rates from DB or API
+     *
+     * @param $baseCurrency
+     * @param $date
+     *
      * @return array
      */
-    private function getExchangeRates()
+    private function getExchangeRates($baseCurrency, $date)
     {
         $repository = $this->getDoctrine()->getRepository(ExchangeRate::class);
-        $exchangeRates = $repository->findAllExchangeRatesByFilters("EUR", date('Y-m-d'));
+        $exchangeRates = $repository->findAllExchangeRatesByFilters($baseCurrency, $date);
         if(empty($exchangeRates)) {
             $exchangeRates = $this->thirdPartyApi->getExchangeRates("EUR", date('Y-m-d'));
             //insert in DB
