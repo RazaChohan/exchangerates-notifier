@@ -33,6 +33,6 @@ class AuthController extends FOSRestController
         $user->setPassword($encoder->encodePassword($user, $password));
         $em->persist($user);
         $em->flush();
-        return ['message' => "User $user->getUsername()successfully created"];
+        return ['message' => "User " . $user->getUsername() . " successfully created"];
     }
 }
