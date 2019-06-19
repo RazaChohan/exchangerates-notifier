@@ -7,6 +7,7 @@
         "ext-iconv": "*",
         "friendsofsymfony/rest-bundle": "^2.5",
         "jms/serializer-bundle": "^2.4",
+        "lexik/jwt-authentication-bundle": "^2.6",
         "php-amqplib/rabbitmq-bundle": "^1.14",
         "phpxmlrpc/phpxmlrpc": "4.0",
         "sensio/framework-extra-bundle": "^5.3",

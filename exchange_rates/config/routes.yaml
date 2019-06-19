@@ -4,3 +4,11 @@
 xmlrpc:
   path: /xmlrpc
   controller: App\Controller\ExchangeRatesController::xmlRpcHandler
+
+api_login_check:
+  path: /api/login_check
+
+fos_user_registration_register:
+  path: /api/register
+  controller: App\Controller\AuthController::register
+

@@ -35,12 +35,11 @@ class ExchangeRatesController extends FOSRestController
      * @param $request
      * @return Response
      */
-    public function getExchangeRate(Request $request)
+    public function getExchangeRates(Request $request)
     {
         $baseCurrency = $request->get('base', 'USD');
         $date = $request->get('date', date('Y-m-d'));
-        $exchangeRates = $this->getExchangeRates($baseCurrency, $date);
-
+        $exchangeRates = $this->fetchExchangeRates($baseCurrency, $date);
         return $this->handleView($this->view($exchangeRates));
     }
     /***
@@ -69,7 +68,7 @@ class ExchangeRatesController extends FOSRestController
      */
     public function getExchangeRateXmlRpc()
     {
-        return $this->getExchangeRates('EUR', date('Y-m-d'));
+        return $this->fetchExchangeRates('EUR', date('Y-m-d'));
     }
 
     /***
@@ -80,7 +79,7 @@ class ExchangeRatesController extends FOSRestController
      *
      * @return array
      */
-    private function getExchangeRates($baseCurrency, $date)
+    private function fetchExchangeRates($baseCurrency, $date)
     {
         $repository = $this->getDoctrine()->getRepository(ExchangeRate::class);
         $exchangeRates = $repository->findAllExchangeRatesByFilters($baseCurrency, $date);
